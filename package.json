@@ -1,0 +1,16 @@
+{
+  "name": "pomelo-cocos2d-jsb",
+  "version": "0.0.1",
+  "description": "pomelo cocos2d-x jsb client",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "pomelo",
+    "cocos2d-x",
+    "jsb"
+  ],
+  "author": "fantasyni",
+  "license": "MIT"
+}
