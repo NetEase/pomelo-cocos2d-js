@@ -1,15 +1,15 @@
 var window = window || {};
 
-require('lib/emitter.js');
+require('emitter/index.js');
 
 window.EventEmitter = Emitter;
 
-require('lib/pomelo-protocol.js');
+require('pomelo-protocol/lib/protocol.js');
 
 window.Protocol = Protocol;
 
-require('lib/pomelo-protobuf.js');
+require('pomelo-protobuf/lib/client/protobuf.js');
 
 window.protobuf = Protobuf;
 
-require('lib/pomelo-jsclient-websocket.js');
+require('pomelo-jsclient-websocket/lib/pomelo-client.js');
