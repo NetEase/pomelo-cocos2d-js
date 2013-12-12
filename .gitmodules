@@ -1,12 +1,12 @@
 [submodule "pomelo-jsclient-websocket"]
 	path = pomelo-jsclient-websocket
-	url = git@github.com:pomelonode/pomelo-jsclient-websocket.git
+	url = https://github.com/pomelonode/pomelo-jsclient-websocket.git
 [submodule "pomelo-protobuf"]
 	path = pomelo-protobuf
-	url = git@github.com:pomelonode/pomelo-protobuf.git
+	url = https://github.com/pomelonode/pomelo-protobuf.git
 [submodule "pomelo-protocol"]
 	path = pomelo-protocol
-	url = git@github.com:NetEase/pomelo-protocol.git
+	url = https://github.com/NetEase/pomelo-protocol.git
 [submodule "emitter"]
 	path = emitter
-	url = git@github.com:component/emitter.git
+	url = https://github.com/component/emitter.git
