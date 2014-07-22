@@ -1,19 +1,39 @@
+
 /**
- * Require the module at `name`.
+ * Require the given path.
  *
- * @param {String} name
+ * @param {String} path
  * @return {Object} exports
  * @api public
  */
 
-function require(name) {
-  var module = require.modules[name];
-  if (!module) throw new Error('failed to require "' + name + '"');
+function require(path, parent, orig) {
+  var resolved = require.resolve(path);
 
-  if (!('exports' in module) && typeof module.definition === 'function') {
-    module.client = module.component = true;
-    module.definition.call(this, module.exports = {}, module);
-    delete module.definition;
+  // lookup failed
+  if (null == resolved) {
+    orig = orig || path;
+    parent = parent || 'root';
+    var err = new Error('Failed to require "' + orig + '" from "' + parent + '"');
+    err.path = orig;
+    err.parent = parent;
+    err.require = true;
+    throw err;
+  }
+
+  var module = require.modules[resolved];
+
+  // perform real require()
+  // by invoking the module's
+  // registered function
+  if (!module._resolving && !module.exports) {
+    var mod = {};
+    mod.exports = {};
+    mod.client = mod.component = true;
+    module._resolving = true;
+    module.call(this, mod.exports, require.relative(resolved), mod);
+    delete module._resolving;
+    module.exports = mod.exports;
   }
 
   return module.exports;
@@ -26,33 +46,160 @@ function require(name) {
 require.modules = {};
 
 /**
- * Register module at `name` with callback `definition`.
+ * Registered aliases.
+ */
+
+require.aliases = {};
+
+/**
+ * Resolve `path`.
  *
- * @param {String} name
+ * Lookup:
+ *
+ *   - PATH/index.js
+ *   - PATH.js
+ *   - PATH
+ *
+ * @param {String} path
+ * @return {String} path or null
+ * @api private
+ */
+
+require.resolve = function(path) {
+  if (path.charAt(0) === '/') path = path.slice(1);
+
+  var paths = [
+    path,
+    path + '.js',
+    path + '.json',
+    path + '/index.js',
+    path + '/index.json'
+  ];
+
+  for (var i = 0; i < paths.length; i++) {
+    var path = paths[i];
+    if (require.modules.hasOwnProperty(path)) return path;
+    if (require.aliases.hasOwnProperty(path)) return require.aliases[path];
+  }
+};
+
+/**
+ * Normalize `path` relative to the current path.
+ *
+ * @param {String} curr
+ * @param {String} path
+ * @return {String}
+ * @api private
+ */
+
+require.normalize = function(curr, path) {
+  var segs = [];
+
+  if ('.' != path.charAt(0)) return path;
+
+  curr = curr.split('/');
+  path = path.split('/');
+
+  for (var i = 0; i < path.length; ++i) {
+    if ('..' == path[i]) {
+      curr.pop();
+    } else if ('.' != path[i] && '' != path[i]) {
+      segs.push(path[i]);
+    }
+  }
+
+  return curr.concat(segs).join('/');
+};
+
+/**
+ * Register module at `path` with callback `definition`.
+ *
+ * @param {String} path
  * @param {Function} definition
  * @api private
  */
 
-require.register = function (name, definition) {
-  require.modules[name] = {
-    definition: definition
-  };
+require.register = function(path, definition) {
+  require.modules[path] = definition;
 };
 
 /**
- * Define a module's exports immediately with `exports`.
+ * Alias a module definition.
  *
- * @param {String} name
- * @param {Generic} exports
+ * @param {String} from
+ * @param {String} to
  * @api private
  */
 
-require.define = function (name, exports) {
-  require.modules[name] = {
-    exports: exports
-  };
+require.alias = function(from, to) {
+  if (!require.modules.hasOwnProperty(from)) {
+    throw new Error('Failed to alias "' + from + '", it does not exist');
+  }
+  require.aliases[to] = from;
 };
-require.register("component~emitter@master", function (exports, module) {
+
+/**
+ * Return a require function relative to the `parent` path.
+ *
+ * @param {String} parent
+ * @return {Function}
+ * @api private
+ */
+
+require.relative = function(parent) {
+  var p = require.normalize(parent, '..');
+
+  /**
+   * lastIndexOf helper.
+   */
+
+  function lastIndexOf(arr, obj) {
+    var i = arr.length;
+    while (i--) {
+      if (arr[i] === obj) return i;
+    }
+    return -1;
+  }
+
+  /**
+   * The relative require() itself.
+   */
+
+  function localRequire(path) {
+    var resolved = localRequire.resolve(path);
+    return require(resolved, parent, path);
+  }
+
+  /**
+   * Resolve relative to the parent.
+   */
+
+  localRequire.resolve = function(path) {
+    var c = path.charAt(0);
+    if ('/' == c) return path.slice(1);
+    if ('.' == c) return require.normalize(p, path);
+
+    // resolve deps by returning
+    // the dep in the nearest "deps"
+    // directory
+    var segs = parent.split('/');
+    var i = lastIndexOf(segs, 'deps') + 1;
+    if (!i) i = 0;
+    path = segs.slice(0, i + 1).join('/') + '/deps/' + path;
+    return path;
+  };
+
+  /**
+   * Check if module is defined at `path`.
+   */
+
+  localRequire.exists = function(path) {
+    return require.modules.hasOwnProperty(localRequire.resolve(path));
+  };
+
+  return localRequire;
+};
+require.register("component-emitter/index.js", function(exports, require, module){
 
 /**
  * Expose `Emitter`.
@@ -219,8 +366,7 @@ Emitter.prototype.hasListeners = function(event){
 };
 
 });
-
-require.register("netease~pomelo-protocol@master", function (exports, module) {
+require.register("netease-pomelo-protocol/lib/protocol.js", function(exports, require, module){
 (function (exports, ByteArray, global) {
   var Protocol = exports;
 
@@ -573,8 +719,7 @@ require.register("netease~pomelo-protocol@master", function (exports, module) {
 })(typeof(window)=="undefined" ? module.exports : (this.Protocol = {}),typeof(window)=="undefined"  ? Buffer : Uint8Array, this);
 
 });
-
-require.register("pomelonode~pomelo-protobuf@master", function (exports, module) {
+require.register("pomelonode-pomelo-protobuf/lib/client/protobuf.js", function(exports, require, module){
 /* ProtocolBuffer client 0.1.0*/
 
 /**
@@ -1199,8 +1344,7 @@ require.register("pomelonode~pomelo-protobuf@master", function (exports, module)
 
 
 });
-
-require.register("pomelonode~pomelo-jsclient-websocket@master", function (exports, module) {
+require.register("pomelonode-pomelo-jsclient-websocket/lib/pomelo-client.js", function(exports, require, module){
 (function() {
   var JS_WS_CLIENT_TYPE = 'js-websocket';
   var JS_WS_CLIENT_VERSION = '0.0.1';
@@ -1668,20 +1812,38 @@ require.register("pomelonode~pomelo-jsclient-websocket@master", function (export
     module.exports = pomelo;
   })();
 });
-
-require.register("./local/boot", function (exports, module) {
-  var Emitter = require("component~emitter@master");
+require.register("boot/index.js", function(exports, require, module){
+  var Emitter = require('emitter');
   window.EventEmitter = Emitter;
 
-  var protocol = require("netease~pomelo-protocol@master");
+  var protocol = require('pomelo-protocol');
   window.Protocol = protocol;
   
-  var protobuf = require("pomelonode~pomelo-protobuf@master");
+  var protobuf = require('pomelo-protobuf');
   window.protobuf = protobuf;
   
-  var pomelo = require("pomelonode~pomelo-jsclient-websocket@master");
+  var pomelo = require('pomelo-jsclient-websocket');
   window.pomelo = pomelo;
 
 });
 
-require("./local/boot")
+
+
+
+
+
+
+
+require.alias("boot/index.js", "pomelo-client/deps/boot/index.js");
+require.alias("boot/index.js", "boot/index.js");
+require.alias("component-emitter/index.js", "boot/deps/emitter/index.js");
+
+require.alias("netease-pomelo-protocol/lib/protocol.js", "boot/deps/pomelo-protocol/lib/protocol.js");
+require.alias("netease-pomelo-protocol/lib/protocol.js", "boot/deps/pomelo-protocol/index.js");
+require.alias("netease-pomelo-protocol/lib/protocol.js", "netease-pomelo-protocol/index.js");
+require.alias("pomelonode-pomelo-protobuf/lib/client/protobuf.js", "boot/deps/pomelo-protobuf/lib/client/protobuf.js");
+require.alias("pomelonode-pomelo-protobuf/lib/client/protobuf.js", "boot/deps/pomelo-protobuf/index.js");
+require.alias("pomelonode-pomelo-protobuf/lib/client/protobuf.js", "pomelonode-pomelo-protobuf/index.js");
+require.alias("pomelonode-pomelo-jsclient-websocket/lib/pomelo-client.js", "boot/deps/pomelo-jsclient-websocket/lib/pomelo-client.js");
+require.alias("pomelonode-pomelo-jsclient-websocket/lib/pomelo-client.js", "boot/deps/pomelo-jsclient-websocket/index.js");
+require.alias("pomelonode-pomelo-jsclient-websocket/lib/pomelo-client.js", "pomelonode-pomelo-jsclient-websocket/index.js");
