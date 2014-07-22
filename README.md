@@ -1,21 +1,29 @@
-#pomelo-cocos2d-jsb
+#pomelo-cocos2d-js
 
-`pomelo-cocos2d-jsb` is a library for using in [pomelo](http://pomelo.netease.com/) with [cocos2d-x javaScript binding](http://cocos2d-x.org/wiki/Javascript_Binding)  
+`pomelo-cocos2d-js` is a library for using in [pomelo](http://pomelo.netease.com/) with [cocos2dx-js](http://cocos2d-x.org/products#cocos2dx-js)  
 
 #Usage
-in your cocos2d-x javaScript resoures directory, run  
+in your cocos2dx-js main directory, run  
 ```
-git clone https://github.com/Netease/pomelo-cocos2d-jsb.git --recursive
+git clone https://github.com/Netease/pomelo-cocos2d-js.git --recursive
 ```
 
-then in cocos2d-x jsb main javaScript file, adds following code  
+then in cocos2d-x jsb [main.js](https://github.com/pomelonode/pomelo-cocos2d-js-demo/blob/master/main.js) javaScript file, adds following code  
 ```
-require('pomelo-cocos2d-jsb/index.js');
+if (cc.sys.isNative === true) {
+	require('pomelo-cocos2d-jsb/index.js');
+}
 ```   
-then in AppDelegate.cpp file, adds following code
+
+update [index.html](https://github.com/pomelonode/pomelo-cocos2d-js-demo/blob/master/index.html)  
 ```
-sc->addRegisterCallback(register_jsb_websocket);
-``` 
+<script src="frameworks/cocos2d-html5/CCBoot.js"></script>
+<script src="pomelo-cocos2d-jsb/html5/build/build.js"></script>
+<script type="text/javascript">
+    require('boot');
+</script> 
+<script src="main.js"></script>
+```
 
 then you can use `pomelo` object under the gloal `window` object the same as using in the browser  
 
@@ -73,7 +81,7 @@ function chatSend() {
 
 (The MIT License)
 
-Copyright (c) 2012-2013 NetEase, Inc. and other contributors
+Copyright (c) 2012-2014 NetEase, Inc. and other contributors
 
 Permission is hereby granted, free of charge, to any person obtaining
 a copy of this software and associated documentation files (the
