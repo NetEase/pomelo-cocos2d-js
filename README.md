@@ -12,6 +12,10 @@ then in cocos2d-x jsb main javaScript file, adds following code
 ```
 require('pomelo-cocos2d-jsb/index.js');
 ```   
+then in AppDelegate.cpp file, adds following code
+```
+sc->addRegisterCallback(register_jsb_websocket);
+``` 
 
 then you can use `pomelo` object under the gloal `window` object the same as using in the browser  
 
