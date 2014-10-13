@@ -22,12 +22,12 @@ var clearTimeout = function(target) {
 window.setTimeout = setTimeout;
 window.clearTimeout = clearTimeout;
 
-require('pomelo-cocos2d-jsb/lib/emitter/index.js');
+require('./lib/emitter/index.js');
 
 window.EventEmitter = Emitter;
 
-require('pomelo-cocos2d-jsb/lib/pomelo-protocol/lib/protocol.js');
+require('./lib/pomelo-protocol/lib/protocol.js');
 
-require('pomelo-cocos2d-jsb/lib/pomelo-protobuf/lib/client/protobuf.js');
+require('./lib/pomelo-protobuf/lib/client/protobuf.js');
 
-require('pomelo-cocos2d-jsb/lib/pomelo-jsclient-websocket/lib/pomelo-client.js');
+require('./lib/pomelo-jsclient-websocket/lib/pomelo-client.js');
