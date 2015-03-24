@@ -1,16 +1,27 @@
 {
-  "name": "pomelo-cocos2d-jsb",
-  "version": "0.0.1",
-  "description": "pomelo cocos2d-x jsb client",
+  "name": "pomelo-cocos2d-js",
+  "version": "0.1.1",
+  "description": "pomelo-cocos2d-js client",
   "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/NetEase/pomelo-cocos2d-js"
   },
   "keywords": [
     "pomelo",
     "cocos2d-x",
     "jsb"
   ],
+  "dependencies": {
+    "pomelo-protobuf": "0.4.0",
+    "pomelo-protocol": "0.1.5",
+    "pomelo-jsclient-websocket": "0.1.0"
+  },
   "author": "fantasyni",
-  "license": "MIT"
+  "license": "MIT",
+  "devDependencies": {
+    "grunt": "~0.4.2",
+    "grunt-browserify": "3.x",
+    "grunt-contrib-uglify": "~0.3.2"
+  }
 }

@@ -1,33 +1,29 @@
-var window = window || {};
-var module = module || {};
-module.exports = {};
+function checkCocos2dJsb() {
+	if (typeof cc !== 'undefined' && cc && cc.sys && cc.sys.isNative) {
+		return true;
+	}
 
-var console = cc;
-console.error = cc.log;
-
-var setTimeout = function(fn, interval) {
-	var instance = cc.Director.getInstance();
-	var scene = instance.getRunningScene();
-
-	instance.getScheduler().
-		scheduleCallbackForTarget(scene, fn, interval, 1, 0, false);
-	return scene;
+	return false;
 }
 
-var clearTimeout = function(target) {
-	var instance = cc.Director.getInstance();
-	instance.getScheduler().unscheduleAllCallbacksForTarget(target);
+if (checkCocos2dJsb()) {
+	var window = window || {};
+	// var module = module || {};
+	// module.exports = {};
+	var console = cc;
+	console.error = cc.log;
 }
 
-window.setTimeout = setTimeout;
-window.clearTimeout = clearTimeout;
+var Root;
+(function() {
+	Root = this;
+}());
 
-require('pomelo-cocos2d-jsb/lib/emitter/index.js');
-
-window.EventEmitter = Emitter;
-
-require('pomelo-cocos2d-jsb/lib/pomelo-protocol/lib/protocol.js');
-
-require('pomelo-cocos2d-jsb/lib/pomelo-protobuf/lib/client/protobuf.js');
-
-require('pomelo-cocos2d-jsb/lib/pomelo-jsclient-websocket/lib/pomelo-client.js');
+var EventEmitter = require('events').EventEmitter;
+Root.EventEmitter = EventEmitter;
+var protobuf = require('pomelo-protobuf');
+Root.protobuf = protobuf;
+var Protocol = require('pomelo-protocol');
+Root.Protocol = Protocol;
+var pomelo = require('pomelo-jsclient-websocket');
+Root.pomelo = pomelo;
