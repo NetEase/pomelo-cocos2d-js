@@ -3,26 +3,18 @@
 `pomelo-cocos2d-js` is a library for using in [pomelo](http://pomelo.netease.com/) with [cocos2dx-js](http://cocos2d-x.org/products#cocos2dx-js)  
 
 #Usage
-in your cocos2dx-js main directory, run  
+using browserify to resolve library dependencies  
+
+add this library to your project  
+
 ```
-git clone https://github.com/Netease/pomelo-cocos2d-js.git --recursive
+npm install pomelo-cocos2d-js --save
 ```
 
-then in cocos2d-x jsb [main.js](https://github.com/pomelonode/pomelo-cocos2d-js-demo/blob/master/main.js) javaScript file, adds following code  
-```
-if (cc.sys.isNative === true) {
-	require('pomelo-cocos2d-jsb/index.js');
-}
-```   
+add to your browserify main.js   
 
-update [index.html](https://github.com/pomelonode/pomelo-cocos2d-js-demo/blob/master/index.html)  
 ```
-<script src="frameworks/cocos2d-html5/CCBoot.js"></script>
-<script src="pomelo-cocos2d-jsb/html5/build/build.js"></script>
-<script type="text/javascript">
-    require('boot');
-</script> 
-<script src="main.js"></script>
+require('pomelo-cocos2d-js');
 ```
 
 then you can use `pomelo` object under the gloal `window` object the same as using in the browser  

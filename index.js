@@ -8,8 +8,6 @@ function checkCocos2dJsb() {
 
 if (checkCocos2dJsb()) {
 	var window = window || {};
-	// var module = module || {};
-	// module.exports = {};
 	var console = cc;
 	console.error = cc.log;
 }
