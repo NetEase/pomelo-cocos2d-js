@@ -1,3 +1,5 @@
+var Util = require('util');
+
 function checkCocos2dJsb() {
 	if (typeof cc !== 'undefined' && cc && cc.sys && cc.sys.isNative) {
 		return true;
@@ -13,8 +15,8 @@ var Root;
 
 if (checkCocos2dJsb()) {
 	var console = cc;
-	console.error = cc.log;
 	Root.console = console;
+	cc.formatStr = Util.format;
 }
 
 var EventEmitter = require('events').EventEmitter;
