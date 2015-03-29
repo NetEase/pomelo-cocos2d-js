@@ -6,16 +6,16 @@ function checkCocos2dJsb() {
 	return false;
 }
 
-if (checkCocos2dJsb()) {
-	var window = window || {};
-	var console = cc;
-	console.error = cc.log;
-}
-
 var Root;
 (function() {
 	Root = this;
 }());
+
+if (checkCocos2dJsb()) {
+	var console = cc;
+	console.error = cc.log;
+	Root.console = console;
+}
 
 var EventEmitter = require('events').EventEmitter;
 Root.EventEmitter = EventEmitter;
