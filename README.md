@@ -17,6 +17,8 @@ add to your browserify main.js
 require('pomelo-cocos2d-js');
 ```
 
+in cocos2d-js you can also add [dist/pomelo-cocos2d-js.js](https://github.com/NetEase/pomelo-cocos2d-js/tree/master/dist/pomelo-cocos2d-js.js) file into ***jsList***  
+
 then you can use `pomelo` object under the gloal `window` object the same as using in the browser  
 
 simple chat test  
