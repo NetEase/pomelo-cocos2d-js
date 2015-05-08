@@ -15,7 +15,7 @@
   "dependencies": {
     "pomelo-protobuf": "0.4.0",
     "pomelo-protocol": "0.1.5",
-    "pomelo-jsclient-websocket": "0.1.0"
+    "pomelo-jsclient-websocket": "0.1.1"
   },
   "author": "fantasyni",
   "license": "MIT",

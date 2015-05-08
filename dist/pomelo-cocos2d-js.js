@@ -2867,7 +2867,8 @@ function hasOwnProperty(obj, prop) {
   };
 
   var send = function(packet) {
-    socket.send(packet.buffer);
+    if(socket)
+      socket.send(packet.buffer);
   };
 
   var handler = {};
@@ -2995,7 +2996,7 @@ function hasOwnProperty(obj, prop) {
       route = msg.route = abbrs[route];
     }
     if(protobuf && serverProtos[route]) {
-      return protobuf.decode(route, msg.body);
+      return protobuf.decodeStr(route, msg.body);
     } else if(decodeIO_decoder && decodeIO_decoder.lookup(route)) {
       return decodeIO_decoder.build(route).decode(msg.body);
     } else {
@@ -3060,6 +3061,7 @@ function hasOwnProperty(obj, prop) {
 
     module.exports = pomelo;
   })();
+
 },{}],12:[function(require,module,exports){
 var Encoder = module.exports;
 
