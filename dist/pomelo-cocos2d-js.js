@@ -2892,9 +2892,7 @@ function hasOwnProperty(obj, prop) {
     heartbeatId = setTimeout(function() {
       heartbeatId = null;
       send(obj);
-      
       pomelo.emit('heartbeat');
-
       nextHeartbeatTimeout = Date.now() + heartbeatTimeout;
       heartbeatTimeoutId = setTimeout(heartbeatTimeoutCb, heartbeatTimeout);
     }, heartbeatInterval);
